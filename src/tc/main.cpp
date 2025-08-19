@@ -54,7 +54,7 @@ class FdFileFinder : public IFileFinder {
 
     auto files = sbuffer | std::views::drop_while(isspace) |
                  std::views::reverse | std::views::drop_while(isspace) |
-                 std::ranges::views::reverse | std::views::split('\n') |
+                 std::views::reverse | std::views::split('\n') |
                  std::ranges::to<std::vector<std::string>>();
 
     return files;
