@@ -1,6 +1,7 @@
 // Copyright (c) Maia
 
 #include <print>
+#include <iostream>
 
 #include <boost/asio.hpp>
 #include <boost/process.hpp>
