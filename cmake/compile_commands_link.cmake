@@ -1,0 +1,13 @@
+# Copyright (c) Maia
+
+set(COMPILE_COMMANDS_JSON "${CMAKE_CURRENT_BINARY_DIR}/compile_commands.json")
+set(
+  COMPILE_COMMANDS_JSON_LINK
+  "${CMAKE_CURRENT_SOURCE_DIR}/compile_commands.json"
+)
+file(
+  CREATE_LINK
+    "${COMPILE_COMMANDS_JSON}"
+    "${COMPILE_COMMANDS_JSON_LINK}"
+  SYMBOLIC
+)

@@ -1,0 +1,133 @@
+CompileFlags:
+  Add:
+    - /std:c++latest
+    # - /std:c++20
+    # - /std:c++23preview
+    # - --std=c++23
+    # - -std=c++23
+    # - -D_CRT_USE_BUILTIN_OFFSETOF
+
+Diagnostics:
+  UnusedIncludes: Strict
+  MissingIncludes: None
+  Suppress:
+    - no_member
+  ClangTidy:
+    Add:
+      - abseil-*
+      - bugprone-*
+      - cert-*
+      - cppcoreguidelines-*
+      - google-*
+      - hicpp-*
+      - misc-*
+      - modernize-*
+      - performance-*
+      - portability-*
+      - readability-*
+    Remove:
+      - bugprone-easily-swappable-parameters
+      - bugprone-implicit-widening-of-multiplication-result
+      # - bugprone-narrowing-conversions
+      - cppcoreguidelines-avoid-c-arrays
+      - cppcoreguidelines-avoid-const-or-ref-data-members
+      - cppcoreguidelines-avoid-do-while
+      - cppcoreguidelines-avoid-magic-numbers
+      - cppcoreguidelines-avoid-non-const-global-variables
+      - cppcoreguidelines-init-variables
+      - cppcoreguidelines-macro-usage
+      - cppcoreguidelines-missing-std-forward
+      - cppcoreguidelines-narrowing-conversions
+      - cppcoreguidelines-no-malloc
+      - cppcoreguidelines-non-private-member-variables-in-classes
+      - cppcoreguidelines-owning-memory
+      - cppcoreguidelines-prefer-member-initializer
+      - cppcoreguidelines-pro-bounds-array-to-pointer-decay
+      - cppcoreguidelines-pro-bounds-constant-array-index
+      - cppcoreguidelines-pro-bounds-pointer-arithmetic
+      - cppcoreguidelines-pro-type-member-init
+      - cppcoreguidelines-pro-type-reinterpret-cast
+      - cppcoreguidelines-pro-type-vararg
+      - cppcoreguidelines-special-member-functions
+      - google-readability-braces-around-statements
+      - google-readability-namespace-comments
+      - google-readability-todo
+      - hicpp-avoid-c-arrays
+      - hicpp-member-init
+      - hicpp-move-const-arg
+      - hicpp-named-parameter
+      - hicpp-no-array-decay
+      - hicpp-no-assembler
+      - hicpp-no-malloc
+      - hicpp-signed-bitwise
+      - hicpp-special-member-functions
+      - hicpp-uppercase-literal-suffix
+      - hicpp-use-auto
+      - hicpp-use-emplace
+      - hicpp-use-override
+      - hicpp-vararg
+      - misc-const-correctness
+      - misc-include-cleaner
+      - misc-no-recursion
+      - misc-non-private-member-variables-in-classes
+      - misc-use-internal-linkage
+      - modernize-avoid-c-arrays
+      - modernize-concat-nested-namespaces
+      - modernize-pass-by-value
+      - modernize-raw-string-literal
+      - modernize-return-braced-init-list
+      - modernize-use-auto
+      - modernize-use-emplace
+      - modernize-use-nodiscard
+      - modernize-use-ranges
+      - modernize-use-trailing-return-type
+      - modernize-use-using
+      - performance-enum-size
+      - performance-move-const-arg
+      - performance-unnecessary-value-param
+      - readability-braces-around-statements
+      - readability-convert-member-functions-to-static
+      - readability-else-after-return
+      - readability-function-cognitive-complexity
+      - readability-identifier-length
+      - readability-implicit-bool-conversion
+      - readability-magic-numbers
+      - readability-math-missing-parentheses
+      - readability-named-parameter
+      - readability-redundant-declaration
+      - readability-uppercase-literal-suffix
+      - readability-use-numeric-limits
+    FastCheckFilter: None
+
+    CheckOptions:
+      cppcoreguidelines-special-member-functions.AllowSoleDefaultDtor: true
+      readability-function-cognitive-complexity.IgnoreMacros: true
+      readability-identifier-naming.ClassCase: CamelCase
+      readability-identifier-naming.ClassMemberCase: lower_case
+      readability-identifier-naming.ClassMemberSuffix: _
+      readability-identifier-naming.ConstexprVariableCase: CamelCase
+      readability-identifier-naming.ConstexprVariablePrefix: k
+      readability-identifier-naming.EnumConstantCase: CamelCase
+      readability-identifier-naming.EnumConstantPrefix: k
+      readability-identifier-naming.FunctionCase: aNy_CasE
+      readability-identifier-naming.GlobalConstantCase: CamelCase
+      readability-identifier-naming.GlobalConstantPrefix: k
+      readability-identifier-naming.NamespaceCase: lower_case
+      readability-identifier-naming.PrivateMemberCase: lower_case
+      readability-identifier-naming.PrivateMemberSuffix: _
+      readability-identifier-naming.ProtectedMemberCase: lower_case
+      readability-identifier-naming.ProtectedMemberSuffix: _
+      readability-identifier-naming.PublicMemberCase: lower_case
+      readability-identifier-naming.StaticConstantCase: CamelCase
+      readability-identifier-naming.StaticConstantPrefix: k
+      readability-identifier-naming.StructCase: CamelCase
+      readability-identifier-naming.TemplateParameterCase: CamelCase
+      readability-identifier-naming.VariableCase: lower_case
+      readability-implicit-bool-conversion.AllowIntegerConditions: true
+      readability-implicit-bool-conversion.AllowPointerConditions: true
+      bugprone-narrowing-conversions.WarnOnIntegerNarrowingConversion: false
+      bugprone-narrowing-conversions.WarnOnIntegerToFloatingPointNarrowingConversion: false
+
+Index:
+  Background: Skip
+
