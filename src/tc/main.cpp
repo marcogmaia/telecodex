@@ -5,7 +5,6 @@
 #include <boost/asio.hpp>
 #include <boost/process.hpp>
 
-#include "tc/file_finder.h"
 #include "tc/server.h"
 
 namespace tc {
