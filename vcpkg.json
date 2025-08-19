@@ -3,5 +3,5 @@
   "name": "telecodex",
   "version-string": "0.0.1",
   "builtin-baseline": "dd3097e305afa53f7b4312371f62058d2e665320",
-  "dependencies": ["boost-process", "efsw", "gtest", "nlohmann-json"]
+  "dependencies": ["boost-process", "efsw", "gtest", "nlohmann-json", "scnlib"]
 }

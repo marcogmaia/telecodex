@@ -6,6 +6,8 @@
 #include <boost/asio.hpp>
 #include <boost/process.hpp>
 
+#include "tc/server.h"
+
 class IFileFinder {
  public:
   virtual ~IFileFinder() = default;
