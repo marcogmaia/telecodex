@@ -49,7 +49,6 @@ void HandleInitialize(const nlohmann::json& request);
 ///
 void HandleQueryFiles(const nlohmann::json& request);
 
-// TODO: Remove this from here.
-int Run();
+
 
 }  // namespace tc

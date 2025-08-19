@@ -9,6 +9,8 @@ add_library(telecodex.lib)
 target_sources(
   telecodex.lib
   PRIVATE
+    file_finder.cpp
+    file_finder.h
     server.cpp
     server.h
 )

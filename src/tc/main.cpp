@@ -1,78 +1,72 @@
 // Copyright (c) Maia
 
 #include <print>
-#include <ranges>
 
 #include <boost/asio.hpp>
 #include <boost/process.hpp>
 
+#include "tc/file_finder.h"
 #include "tc/server.h"
 
-class IFileFinder {
- public:
-  virtual ~IFileFinder() = default;
+namespace tc {
 
-  virtual std::vector<std::string> GetFiles() = 0;
-};
+namespace {
 
-class FdFileFinder : public IFileFinder {
- public:
-  std::vector<std::string> GetFiles() override {
-    namespace asio = boost::asio;
-    namespace bp = boost::process;
+bool IsValidRequest(const nlohmann::json& request) {
+  return request.contains("jsonrpc") && request["jsonrpc"] == "2.0" &&
+         request.contains("method");
+}
 
-    asio::readable_pipe readable_pipe{io_context_};
+}  // namespace
 
-    auto fd_path = bp::environment::find_executable("fd.exe");
+int Run() {
+  while (true) {
+    auto message = ReadMessage(std::cin);
+    if (!message) {
+      if (std::cin.eof()) {
+        break;
+      }
+      // TODO: Use an enum instead of these magic numbers to enum.
+      // Per spec, a Parse Error is sent if the JSON is invalid.
+      WriteErrorResponse(nullptr, -32700, "Parse error");
+      continue;
+    }
 
-    boost::process::process proc(
-        io_context_.get_executor(),
-        fd_path,
-        {"--type", "file"},
-        boost::process::process_stdio{
-            .in = {}, .out = readable_pipe, .err = {}});
+    const nlohmann::json& request = *message;
+    auto id =
+        request.contains("id") ? std::optional(request["id"]) : std::nullopt;
 
-    asio::streambuf buffer;
-    std::string sbuffer;
+    if (!IsValidRequest(request)) {
+      WriteErrorResponse(id, -32600, "Invalid Request");
+    }
 
-    asio::async_read(
-        readable_pipe,
-        buffer,
-        [&](const boost::system::error_code& ec,
-            std::size_t bytes_transferred) {
-          if (!ec || ec == asio::error::eof || ec == asio::error::broken_pipe) {
-            const auto data = buffer.data();
-            sbuffer =
-                std::string(asio::buffers_begin(data),
-                            asio::buffers_begin(data) + bytes_transferred);
-          } else {
-            std::print("Read Error: {}\n", ec.message());
-          }
-        });
+    // Notifications do not have an ID and do not get responses.
+    // We only need to respond to requests that have an ID.
+    std::string method = request["method"];
 
-    proc.async_wait([&](std::error_code, int exit_code) {});
-
-    io_context_.run();
-
-    auto files = sbuffer | std::views::drop_while(isspace) |
-                 std::views::reverse | std::views::drop_while(isspace) |
-                 std::views::reverse | std::views::split('\n') |
-                 std::ranges::to<std::vector<std::string>>();
-
-    return files;
+    // Dispatch to the correct handler based on the method.
+    if (method == "initialize") {
+      HandleInitialize(request);
+    } else if (method == "queryFiles") {
+      HandleQueryFiles(request);
+    } else if (method == "exit") {
+      break;
+    } else {
+      // Per spec, send an error if the method is unknown.
+      if (id.has_value()) {
+        WriteErrorResponse(id, -32601, "Method not found");
+      }
+    }
   }
 
- private:
-  boost::asio::io_context io_context_;
-};
+  return 0;
+}
+
+}  // namespace tc
 
 int main() {
   try {
-    FdFileFinder file_finder{};
-    auto files = file_finder.GetFiles();
-    for (auto& file : files) {
-      std::println("{}", file);
-    }
+    tc::Run();
   } catch (std::exception& e) {
     std::print("Error: {}\n", e.what());
   }
