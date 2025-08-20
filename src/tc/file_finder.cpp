@@ -38,7 +38,7 @@ std::vector<std::string> FdFileFinder::GetFiles() {
           sbuffer = std::string(asio::buffers_begin(data),
                                 asio::buffers_begin(data) + bytes_transferred);
         } else {
-          std::print("Read Error: {}\n", ec.message());
+          std::print(stderr, "Read Error: {}\n", ec.message());
         }
       });
 

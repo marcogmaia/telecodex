@@ -1,7 +1,7 @@
 // Copyright (c) Maia
 
-#include <print>
 #include <iostream>
+#include <print>
 
 #include <boost/asio.hpp>
 #include <boost/process.hpp>
@@ -17,9 +17,11 @@ bool IsValidRequest(const nlohmann::json& request) {
          request.contains("method");
 }
 
-}  // namespace
-
 int Run() {
+  boost::asio::io_context ioc;
+
+  FdFileFinder file_finder{};
+
   while (true) {
     auto message = ReadMessage(std::cin);
     if (!message) {
@@ -48,7 +50,7 @@ int Run() {
     if (method == "initialize") {
       HandleInitialize(request);
     } else if (method == "queryFiles") {
-      HandleQueryFiles(request);
+      HandleQueryFiles(request, file_finder);
     } else if (method == "exit") {
       break;
     } else {
@@ -62,13 +64,15 @@ int Run() {
   return 0;
 }
 
+}  // namespace
+
 }  // namespace tc
 
 int main() {
   try {
     tc::Run();
   } catch (std::exception& e) {
-    std::print("Error: {}\n", e.what());
+    std::print(stderr, "Error: {}\n", e.what());
   }
   return 0;
 }

@@ -3,18 +3,65 @@
 #include "tc/server.h"
 
 #include <iostream>
+#include <print>
 #include <vector>
-#include "tc/file_finder.h"
 
 #include <scn/scan.h>
+
+#include "tc/file_finder.h"
 
 namespace tc {
 
 void WriteMessage(const nlohmann::json& message) {
   const std::string content = message.dump();
-  // The Language Server Protocol requires this specific header format.
-  std::cout << "Content-Length: " << content.length() << "\r\n\r\n"
-            << content << std::flush;
+  std::print(
+      std::cout, "Content-Length: {}\r\n\r\n{}", content.size(), content);
+}
+
+std::optional<int> ParseContentLengthWithBuffer(std::istream& input) {
+  std::vector<char> buffer(128);  // Start with a reasonable buffer size
+  input.read(buffer.data(), buffer.size());
+
+  std::string_view header_view(buffer.data(), input.gcount());
+
+  // Find the end of the headers.
+  auto end_of_headers = header_view.find("\r\n\r\n");
+  if (end_of_headers == std::string_view::npos) {
+    return std::nullopt;
+  }
+
+  // Find the "Content-Length: " string.
+  auto cl_pos = header_view.find("Content-Length: ");
+  if (cl_pos == std::string_view::npos) {
+    return std::nullopt;
+  }
+
+  // Isolate the number part.
+  auto value_start = cl_pos + 16;
+  auto value_end = header_view.find("\r\n", value_start);
+  if (value_end == std::string_view::npos) {
+    return std::nullopt;
+  }
+
+  std::string_view length_sv =
+      header_view.substr(value_start, value_end - value_start);
+
+  // Safely parse the number from the string_view
+  int content_length;
+  auto [ptr, ec] = std::from_chars(
+      length_sv.data(), length_sv.data() + length_sv.size(), content_length);
+
+  if (ec != std::errc()) {  // NOLINT
+    return std::nullopt;
+  }
+
+  // Crucially, we must "put back" the unread body part into the stream
+  // so the next read operation can consume it. The clear() is here because we
+  // might read everything in `input`, thus triggering the `eof` bit.
+  input.clear();
+  input.seekg(end_of_headers + 4 - input.gcount(), std::ios_base::cur);
+
+  return content_length;
 }
 
 void WriteErrorResponse(const std::optional<nlohmann::json>& id,
@@ -29,21 +76,21 @@ void WriteErrorResponse(const std::optional<nlohmann::json>& id,
 }
 
 std::optional<nlohmann::json> ReadMessage(std::istream& input) {
-  std::string line;
-  int content_length = -1;
-
-  // First, read headers until we find "Content-Length" and the separating blank
-  // line.
-  while (std::getline(input, line) && !line.empty() && line != "\r") {
-    // Use scn::scan to find and parse the Content-Length header.
-    auto result = scn::scan<int>(line, "Content-Length: {}");
-    if (result) {
-      content_length = result->value();
-    }
-    // We continue reading to consume any other headers.
+  // I feel like the right way to do this is with asio.
+  std::vector<char> buffer(64);
+  input.getline(buffer.data(), buffer.size(), '\r');
+  // Ignore the remaining "\n\r\n".
+  input.ignore(3);
+  auto content_str = std::string_view(buffer.data(), input.tellg());
+  auto res = scn::scan<int>(content_str, "Content-Length: {}");
+  if (!res) {
+    return std::nullopt;
   }
 
-  if (content_length <= 0) {
+  int content_length = res->value();
+
+  if (!content_length) {
+    input.ignore(std::numeric_limits<int>::max());
     return std::nullopt;
   }
 
@@ -52,15 +99,22 @@ std::optional<nlohmann::json> ReadMessage(std::istream& input) {
   input.read(content.data(), content_length);
 
   try {
-    return nlohmann::json::parse(content);
+    auto json = nlohmann::json::parse(content);
+    std::print(stderr, "Received:\n{}\n", json.dump());
+    return json;
   } catch (const nlohmann::json::parse_error& e) {
     // Let the main loop handle sending the Parse Error response.
+    // TODO: At least log something.
+    input.ignore(std::numeric_limits<int>::max());
     return std::nullopt;
   }
 }
 
 void HandleInitialize(const nlohmann::json& request) {
-  // TODO: start indexing files here.
+  // TODO: Start indexing files here.
+  // TODO: Check a better way to log, without using stderr, this is a hacky way
+  // to get something running initially.
+  std::cerr << "Initialize request received.\n" << request.dump(2);
 
   // Send a response back to the client.
   nlohmann::json response = {
@@ -72,14 +126,13 @@ void HandleInitialize(const nlohmann::json& request) {
   WriteMessage(response);
 }
 
-void HandleQueryFiles(const nlohmann::json& request) {
+void HandleQueryFiles(const nlohmann::json& request, IFileFinder& file_finder) {
   std::string query = request["params"]["query"];
   std::cerr << "Received query: " << query << '\n';
 
   // TODO: Move this to proper place where the indexing should occur. We would
   // nee to use a system watcher to keep the index always up to date.
-  FdFileFinder finder{};
-  auto files = finder.GetFiles();
+  auto files = file_finder.GetFiles();
 
   for (const auto& file : files) {
     // Create and send a notification for each result.

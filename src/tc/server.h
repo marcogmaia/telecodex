@@ -5,6 +5,7 @@
 #include <string>
 
 #include <nlohmann/json.hpp>
+#include "tc/file_finder.h"
 
 namespace tc {
 
@@ -33,6 +34,9 @@ void WriteErrorResponse(const std::optional<nlohmann::json>& id,
 /// \return An optional containing the parsed JSON object, or std::nullopt on
 /// failure.
 ///
+/// \note This function clears the \p input in case it isn't able to parse it
+/// properly.
+///
 std::optional<nlohmann::json> ReadMessage(std::istream& input);
 
 ///
@@ -47,8 +51,6 @@ void HandleInitialize(const nlohmann::json& request);
 ///
 /// \param request The JSON request object.
 ///
-void HandleQueryFiles(const nlohmann::json& request);
-
-
+void HandleQueryFiles(const nlohmann::json& request, IFileFinder& file_finder);
 
 }  // namespace tc
