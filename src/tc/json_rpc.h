@@ -8,8 +8,12 @@ namespace tc {
 
 class JsonRpc {
  public:
- 
+  JsonRpc();
+  ~JsonRpc();
+
   void Init();
+
+  void Task();
 
  private:
   struct Impl;

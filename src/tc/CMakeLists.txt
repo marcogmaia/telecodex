@@ -11,6 +11,8 @@ target_sources(
   PRIVATE
     file_finder.cpp
     file_finder.h
+    json_rpc.cpp
+    json_rpc.h
     server.cpp
     server.h
 )
@@ -32,7 +34,12 @@ target_sources(telecodex PRIVATE main.cpp)
 target_link_libraries(telecodex PRIVATE telecodex.lib)
 
 add_executable(telecodex_test)
-target_sources(telecodex_test PRIVATE server_test.cpp)
+target_sources(
+  telecodex_test
+  PRIVATE
+    server_test.cpp
+    json_rpc_test.cpp
+)
 target_link_libraries(
   telecodex_test
   PRIVATE
@@ -41,3 +48,12 @@ target_link_libraries(
 )
 
 gtest_discover_tests(telecodex_test DISCOVERY_TIMEOUT 60)
+
+
+
+
+
+# ---
+
+# add_executable(test_app test_app.cpp)
+# target_link_libraries(test_app PRIVATE telecodex.lib)

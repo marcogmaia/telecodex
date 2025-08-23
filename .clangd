@@ -98,7 +98,6 @@ Diagnostics:
       - readability-uppercase-literal-suffix
       - readability-use-numeric-limits
     FastCheckFilter: None
-
     CheckOptions:
       cppcoreguidelines-special-member-functions.AllowSoleDefaultDtor: true
       readability-function-cognitive-complexity.IgnoreMacros: true
@@ -128,6 +127,8 @@ Diagnostics:
       bugprone-narrowing-conversions.WarnOnIntegerNarrowingConversion: false
       bugprone-narrowing-conversions.WarnOnIntegerToFloatingPointNarrowingConversion: false
 
+Documentation:
+  CommentFormat: Doxygen
+
 Index:
   Background: Skip
-
