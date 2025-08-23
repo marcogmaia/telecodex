@@ -2,9 +2,10 @@
 
 #include "tc/json_rpc.h"
 
-#include <print>
+#include <format>
 
 #include <gtest/gtest.h>
+#include <nlohmann/json.hpp>
 
 namespace tc {
 
@@ -174,6 +175,35 @@ TEST(ReadNextContentLine, SpecialCharacters) {
   EXPECT_EQ(*result1, "Hello © 2024 你好");
   ASSERT_TRUE(result2.has_value());
   EXPECT_EQ(*result2, "Next line");
+}
+
+TEST(ReadNextContentLine, ContentHeader) {
+  std::istringstream input("Content-Length: 7\r\n\r\nContent");
+  auto res1 = ReadNextContentLine(input);
+  auto res2 = ReadNextContentLine(input);
+  ASSERT_TRUE(res1);
+  EXPECT_EQ(*res1, "Content-Length: 7");
+  ASSERT_TRUE(res2);
+  EXPECT_EQ(*res2, "Content");
+}
+
+std::optional<std::string> ReadJsonString(std::istream& input, int length);
+std::optional<int> ParseContentLength(std::string_view content);
+
+TEST(ReadJsonMessage, ReadUnformattedJson) {
+  std::string json_part = "{\"number\": \n42}\n";
+  auto input_str =
+      std::format("Content-Length: {}\r\n\r\n{}", json_part.size(), json_part);
+  std::istringstream input(input_str);
+  auto content = ReadNextContentLine(input);
+  // auto num = scn::scan<int>(*content, "Content-Length: {}");
+  auto num = ParseContentLength(*content);
+  ASSERT_TRUE(num);
+  EXPECT_EQ(num.value(), 16);
+
+  auto json_result = ReadJsonString(input, num.value());
+  ASSERT_TRUE(json_result);
+  EXPECT_EQ(*json_result, json_part);
 }
 
 }  // namespace detail
