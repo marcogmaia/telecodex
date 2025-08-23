@@ -12,22 +12,15 @@ namespace tc {
 
 namespace detail {
 
-std::string GetHeader(std::istream& istream) {
-  std::string buffer(64, 0);
-  istream.get(buffer.data(), buffer.size(), '\r');
-  buffer.resize(istream.gcount());
-  return buffer;
-}
-
-// Left trim: remove leading whitespace
+// Left trim: remove leading whitespace.
 void ltrim(std::string& s) {
   const auto it = std::find_if(s.begin(), s.end(), [](char c) {
-    return !std::isspace(c, std::locale{});  // or use ASCII-only check
+    return !std::isspace(c, std::locale{});
   });
   s.erase(s.begin(), it);
 }
 
-// Right trim: remove trailing whitespace
+// Right trim: remove trailing whitespace.
 void rtrim(std::string& s) {
   const auto it = std::find_if(s.rbegin(), s.rend(), [](char c) {
     return !std::isspace(c, std::locale{});
