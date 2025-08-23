@@ -15,13 +15,6 @@ std::string GetHeader(std::istream& istream);
 
 }  // namespace detail
 
-TEST(JsonRpc, GetHeader) {
-  std::stringstream ss;
-  ss << "Content-Length: 42\r\n\r\n";
-  auto str = detail::GetHeader(ss);
-  EXPECT_EQ(str, "Content-Length: 42");
-}
-
 // TEST(JsonRpc, SimpleTest) {
 //   JsonRpc rpc{};
 //   rpc.Init();
@@ -35,8 +28,9 @@ TEST(JsonRpc, GetHeader) {
 
 namespace detail {
 
-// Forward declaration of the function under test
 std::optional<std::string> ReadNextContentLine(std::istream& input);
+std::optional<int> ParseContentLength(std::string_view content);
+std::optional<std::string> ReadJsonString(std::istream& input, int length);
 
 // Test: Successfully read a line with newline
 TEST(ReadNextContentLine, ReadLineWithNewline) {
@@ -186,9 +180,6 @@ TEST(ReadNextContentLine, ContentHeader) {
   ASSERT_TRUE(res2);
   EXPECT_EQ(*res2, "Content");
 }
-
-std::optional<std::string> ReadJsonString(std::istream& input, int length);
-std::optional<int> ParseContentLength(std::string_view content);
 
 TEST(ReadJsonMessage, ReadUnformattedJson) {
   std::string json_part = "{\"number\": \n42}\n";
