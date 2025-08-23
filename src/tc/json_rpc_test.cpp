@@ -9,12 +9,6 @@
 
 namespace tc {
 
-namespace detail {
-
-std::string GetHeader(std::istream& istream);
-
-}  // namespace detail
-
 // TEST(JsonRpc, SimpleTest) {
 //   JsonRpc rpc{};
 //   rpc.Init();
