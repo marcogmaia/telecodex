@@ -5,6 +5,15 @@ find_package(GTest CONFIG REQUIRED)
 find_package(nlohmann_json CONFIG REQUIRED)
 find_package(scn CONFIG REQUIRED)
 
+if(WIN32)
+  add_compile_definitions(
+    WIN32_LEAN_AND_MEAN
+    NOMINMAX
+    NOGDI
+    NOUSER
+  )
+endif()
+
 add_library(telecodex.lib)
 target_sources(
   telecodex.lib

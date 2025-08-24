@@ -1,0 +1,66 @@
+{
+  "version": 10,
+  "$schema": "https://cmake.org/cmake/help/latest/_downloads/3e2d73bff478d88a7de0de736ba5e361/schema.json",
+  "configurePresets": [
+    {
+      "name": "base",
+      "hidden": true,
+      "generator": "Ninja",
+      "installDir": "${sourceDir}/out/install/${presetName}",
+      "binaryDir": "${sourceDir}/out/build/${presetName}",
+      "cacheVariables": {
+        "CMAKE_COLOR_DIAGNOSTICS": true,
+        "CMAKE_CXX_EXTENSIONS": false,
+        "CMAKE_CXX_STANDARD": "20",
+        "CMAKE_EXPORT_COMPILE_COMMANDS": true
+      }
+    },
+    {
+      "hidden": true,
+      "inherits": "base",
+      "name": "windows-base",
+      "toolset": {
+        "value": "v143,version=14.44,host=x64",
+        "strategy": "external"
+      },
+      "condition": {
+        "lhs": "${hostSystemName}",
+        "rhs": "Windows",
+        "type": "equals"
+      },
+      "displayName": "Windows Config",
+      "cacheVariables": {
+        "CMAKE_CXX_COMPILER": "cl.exe",
+        "CMAKE_C_COMPILER": "cl.exe"
+      }
+    },
+    {
+      "inherits": "windows-base",
+      "name": "windows-debug",
+      "cacheVariables": { "CMAKE_BUILD_TYPE": "Debug" }
+    },
+    {
+      "inherits": "windows-base",
+      "name": "windows-release",
+      "cacheVariables": { "CMAKE_BUILD_TYPE": "RelWithDebInfo" }
+    }
+  ],
+  "buildPresets": [
+    { "name": "windows-release", "configurePreset": "windows-release" },
+    { "name": "windows-debug", "configurePreset": "windows-debug" }
+  ],
+  "testPresets": [
+    {
+      "name": "windows-debug",
+      "execution": { "jobs": 12 },
+      "output": { "outputOnFailure": true },
+      "configurePreset": "windows-debug"
+    },
+    {
+      "name": "windows-release",
+      "execution": { "jobs": 12 },
+      "output": { "outputOnFailure": true },
+      "configurePreset": "windows-release"
+    }
+  ]
+}
