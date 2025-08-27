@@ -10,7 +10,6 @@
       "installDir": "${sourceDir}/out/install/${presetName}",
       "binaryDir": "${sourceDir}/out/build/${presetName}",
       "cacheVariables": {
-        "TC_COMPILE_COMMANDS": true,
         "CMAKE_COLOR_DIAGNOSTICS": true,
         "CMAKE_COMPILE_WARNING_AS_ERROR": false,
         "CMAKE_CXX_EXTENSIONS": false,

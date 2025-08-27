@@ -20,8 +20,6 @@ target_sources(
   PRIVATE
     file_finder.cpp
     file_finder.h
-    json_rpc.cpp
-    json_rpc.h
     server.cpp
     server.h
 )
@@ -43,12 +41,7 @@ target_sources(telecodex PRIVATE main.cpp)
 target_link_libraries(telecodex PRIVATE telecodex.lib)
 
 add_executable(telecodex_test)
-target_sources(
-  telecodex_test
-  PRIVATE
-    server_test.cpp
-    json_rpc_test.cpp
-)
+target_sources(telecodex_test PRIVATE server_test.cpp)
 target_link_libraries(
   telecodex_test
   PRIVATE
@@ -58,11 +51,45 @@ target_link_libraries(
 
 gtest_discover_tests(telecodex_test DISCOVERY_TIMEOUT 60)
 
+add_executable(test_app)
 
+target_link_libraries(
+  test_app
+  PRIVATE
+    telecodex.lib
+    lsp
+)
 
+set(METAMODEL_INPUT "${CMAKE_CURRENT_SOURCE_DIR}/meta/metamodel.json")
 
+file(MAKE_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/meta")
 
-# ---
+set(
+  LSP_GENERATED_SOURCES
+  "${CMAKE_CURRENT_BINARY_DIR}/meta/messages.h"
+  "${CMAKE_CURRENT_BINARY_DIR}/meta/types.cpp"
+  "${CMAKE_CURRENT_BINARY_DIR}/meta/types.h"
+)
 
-# add_executable(test_app test_app.cpp)
-# target_link_libraries(test_app PRIVATE telecodex.lib)
+add_custom_command(
+  OUTPUT
+    ${LSP_GENERATED_SOURCES}
+  COMMAND
+    lspgen "${METAMODEL_INPUT}"
+  DEPENDS
+    ${METAMODEL_INPUT}
+  WORKING_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/meta"
+  COMMENT "Generating lsp types from ${METAMODEL_INPUT} ..."
+  VERBATIM
+)
+
+target_sources(
+  test_app
+  PRIVATE
+    test_app.cpp
+    ${LSP_GENERATED_SOURCES}
+)
+
+target_include_directories(test_app PRIVATE "${CMAKE_CURRENT_BINARY_DIR}/meta")
+
+add_dependencies(test_app lspgen)

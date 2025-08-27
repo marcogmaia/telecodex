@@ -1,0 +1,5 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "description": "Root schema for my custom LSP meta model.",
+  "$ref": "https://microsoft.github.io/language-server-protocol/specifications/lsp/3.17/metaModel/metaModel.schema.json#/definitions/MetaModel"
+}
