@@ -14,9 +14,9 @@ if(WIN32)
   )
 endif()
 
-add_library(telecodex.lib)
+add_library(teletex.lib)
 target_sources(
-  telecodex.lib
+  teletex.lib
   PRIVATE
     file_finder.cpp
     file_finder.h
@@ -24,7 +24,7 @@ target_sources(
     server.h
 )
 target_link_libraries(
-  telecodex.lib
+  teletex.lib
   PUBLIC
     Boost::process
     nlohmann_json::nlohmann_json
@@ -33,30 +33,30 @@ target_link_libraries(
 
 # Check if we can determine if it is Windows 7, Windows 10, etc.
 if(WIN32)
-  target_compile_definitions(telecodex.lib PUBLIC _WIN32_WINNT=0x0A00)
+  target_compile_definitions(teletex.lib PUBLIC _WIN32_WINNT=0x0A00)
 endif()
 
-add_executable(telecodex)
-target_sources(telecodex PRIVATE main.cpp)
-target_link_libraries(telecodex PRIVATE telecodex.lib)
+add_executable(teletex)
+target_sources(teletex PRIVATE main.cpp)
+target_link_libraries(teletex PRIVATE teletex.lib)
 
-add_executable(telecodex_test)
-target_sources(telecodex_test PRIVATE server_test.cpp)
+add_executable(teletex_test)
+target_sources(teletex_test PRIVATE server_test.cpp)
 target_link_libraries(
-  telecodex_test
+  teletex_test
   PRIVATE
     GTest::gtest_main
-    telecodex.lib
+    teletex.lib
 )
 
-gtest_discover_tests(telecodex_test DISCOVERY_TIMEOUT 60)
+gtest_discover_tests(teletex_test DISCOVERY_TIMEOUT 60)
 
 add_executable(test_app)
 
 target_link_libraries(
   test_app
   PRIVATE
-    telecodex.lib
+    teletex.lib
     lsp
 )
 

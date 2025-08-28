@@ -7,7 +7,7 @@
 #include <nlohmann/json.hpp>
 #include "tc/file_finder.h"
 
-namespace tc {
+namespace tt {
 
 ///
 /// \brief Writes a JSON message to stdout with the required length prefix.
@@ -53,4 +53,4 @@ void HandleInitialize(const nlohmann::json& request);
 ///
 void HandleQueryFiles(const nlohmann::json& request, IFileFinder& file_finder);
 
-}  // namespace tc
+}  // namespace tt

@@ -4,7 +4,7 @@
 
 #include <gtest/gtest.h>
 
-namespace tc {
+namespace tt {
 
 namespace {
 
@@ -126,4 +126,4 @@ TEST(RpcUnitTest, HandleQueryFilesStreamsNotifications) {
   }
 }
 
-}  // namespace tc
+}  // namespace tt

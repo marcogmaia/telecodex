@@ -7,7 +7,7 @@
 
 #include <boost/asio/io_context.hpp>
 
-namespace tc {
+namespace tt {
 
 class IFileFinder {
  public:
@@ -24,4 +24,4 @@ class FdFileFinder : public IFileFinder {
   boost::asio::io_context io_context_;
 };
 
-}  // namespace tc
+}  // namespace tt

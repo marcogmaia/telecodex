@@ -10,7 +10,7 @@
 #include <boost/asio.hpp>
 #include <boost/process.hpp>
 
-namespace tc {
+namespace tt {
 
 std::vector<std::string> FdFileFinder::GetFiles() {
   namespace asio = boost::asio;
@@ -54,4 +54,4 @@ std::vector<std::string> FdFileFinder::GetFiles() {
   return files;
 }
 
-}  // namespace tc
+}  // namespace tt

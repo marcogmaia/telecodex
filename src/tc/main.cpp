@@ -8,7 +8,7 @@
 
 #include "tc/server.h"
 
-namespace tc {
+namespace tt {
 
 namespace {
 
@@ -66,11 +66,11 @@ int Run() {
 
 }  // namespace
 
-}  // namespace tc
+}  // namespace tt
 
 int main() {
   try {
-    tc::Run();
+    tt::Run();
   } catch (std::exception& e) {
     std::print(stderr, "Error: {}\n", e.what());
   }

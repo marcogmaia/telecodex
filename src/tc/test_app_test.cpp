@@ -9,7 +9,7 @@
 #include <lsp/process.h>
 #include <boost/process.hpp>
 
-namespace tc {
+namespace tt {
 
 namespace {
 
@@ -71,4 +71,4 @@ TEST(TestApp, Test) {
   
 }
 
-}  // namespace tc
+}  // namespace tt

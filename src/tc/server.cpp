@@ -10,7 +10,7 @@
 
 #include "tc/file_finder.h"
 
-namespace tc {
+namespace tt {
 
 void WriteMessage(const nlohmann::json& message) {
   const std::string content = message.dump();
@@ -146,4 +146,4 @@ void HandleQueryFiles(const nlohmann::json& request, IFileFinder& file_finder) {
   }
 }
 
-}  // namespace tc
+}  // namespace tt
