@@ -41,6 +41,7 @@ target_link_libraries(
   teletex
   PRIVATE
     teletex.lib
+    tt.messages
     lsp
 )
 

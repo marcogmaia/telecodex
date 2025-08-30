@@ -16,6 +16,8 @@ std::vector<std::string> FdFileFinder::GetFiles() {
   namespace asio = boost::asio;
   namespace bp = boost::process;
 
+  io_context_.restart();
+
   asio::readable_pipe readable_pipe{io_context_};
 
   auto fd_path = bp::environment::find_executable("fd.exe");

@@ -906,14 +906,18 @@ R"(#pragma once
 
 namespace tt {
 
+namespace json = lsp::json;
+
 inline constexpr std::string_view VersionStr{"${LSP_VERSION}"};
 
-using Null      = std::nullptr_t;
-using uint      = unsigned int;
-using String    = std::string;
-using LSPArray  = lsp::json::Array;
-using LSPObject = lsp::json::Object;
-using LSPAny    = lsp::json::Any;
+using Null        = std::nullptr_t;
+using uint        = unsigned int;
+using String      = std::string;
+using LSPArray    = json::Array;
+using LSPObject   = json::Object;
+using LSPAny      = json::Any;
+using Uri         = lsp::Uri;
+using DocumentUri = lsp::DocumentUri;
 
 template<typename T>
 using Opt = std::optional<T>;
@@ -1752,8 +1756,8 @@ const CppGenerator::CppBaseType CppGenerator::s_baseTypeMapping[] =
 	{"int"},
 	{"uint"},
 	{"double"},
-	{"lsp::Uri"},
-	{"lsp::DocumentUri"},
+	{"Uri"},
+	{"DocumentUri"},
 	{"String"},
 	{"Null"}
 };

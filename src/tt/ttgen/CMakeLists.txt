@@ -25,9 +25,8 @@ add_library(tt.messages)
 target_sources(
   tt.messages
   PUBLIC
-  FILE_SET HEADERS
-  BASE_DIRS "${TT_GEN_DIR}"
-      FILES ${TTGEN_GENERATED_HEADERS}
+    FILE_SET HEADERS
+    BASE_DIRS "${TT_GEN_DIR}"
   PRIVATE
     ${TTGEN_GENERATED_SOURCES}
 )

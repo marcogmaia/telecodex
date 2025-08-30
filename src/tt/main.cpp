@@ -7,9 +7,10 @@
 #include <lsp/connection.h>
 #include <lsp/io/standardio.h>
 #include <lsp/messagehandler.h>
-#include <lsp/messages.h>
 #include <lsp/process.h>
 #include <boost/asio.hpp>
+
+#include "tt/messages.h"
 
 #include "tt/file_finder.h"
 
@@ -31,11 +32,10 @@ int main() {
 
   tt::FdFileFinder ff;
 
-  message_handler.add<lsp::requests::QueryFiles>(
-      [&]() { return lsp::QueryFilesResult(ToUri(ff.GetFiles())); });
+  message_handler.add<tt::requests::QueryFiles>(
+      [&]() { return tt::QueryFilesResult(ToUri(ff.GetFiles())); });
 
-  message_handler.add<lsp::notifications::Exit>(
-      [&running] { running = false; });
+  message_handler.add<tt::notifications::Exit>([&running] { running = false; });
 
   while (running) {
     message_handler.processIncomingMessages();
