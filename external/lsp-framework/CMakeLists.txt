@@ -32,8 +32,11 @@ endif()
 
 # lspgen
 
-add_executable(lspgen lspgen/lspgen.cpp lsp/json/json.cpp)
-target_include_directories(lspgen PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
+add_executable(lspgen)
+target_sources(lspgen 
+  PRIVATE lspgen/lspgen.cpp lsp/json/json.cpp
+  PRIVATE FILE_SET HEADERS
+)
 
 # liblsp
 
