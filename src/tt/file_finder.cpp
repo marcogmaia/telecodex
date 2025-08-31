@@ -12,7 +12,7 @@
 
 namespace tt {
 
-std::vector<std::string> FdFileFinder::GetFiles() {
+std::vector<std::string> FdFileFinder::GetFilesFromDir(std::string root_dir) {
   namespace asio = boost::asio;
   namespace bp = boost::process;
 
@@ -25,7 +25,7 @@ std::vector<std::string> FdFileFinder::GetFiles() {
   boost::process::process proc(
       io_context_.get_executor(),
       fd_path,
-      {"--type", "file"},
+      {"--type", "f", ".", root_dir},
       boost::process::process_stdio{.in = {}, .out = readable_pipe, .err = {}});
 
   asio::streambuf buffer;
@@ -54,6 +54,10 @@ std::vector<std::string> FdFileFinder::GetFiles() {
                std::ranges::to<std::vector<std::string>>();
 
   return files;
+}
+
+std::vector<std::string> FdFileFinder::GetFiles() {
+  return GetFilesFromDir(".");
 }
 
 }  // namespace tt

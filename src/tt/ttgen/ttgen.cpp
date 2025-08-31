@@ -904,20 +904,16 @@ R"(#pragma once
 #include <lsp/enumeration.h>
 #include <lsp/serialization.h>
 
-namespace tt {
-
-namespace json = lsp::json;
+namespace lsp{
 
 inline constexpr std::string_view VersionStr{"${LSP_VERSION}"};
 
-using Null        = std::nullptr_t;
-using uint        = unsigned int;
-using String      = std::string;
-using LSPArray    = json::Array;
-using LSPObject   = json::Object;
-using LSPAny      = json::Any;
-using Uri         = lsp::Uri;
-using DocumentUri = lsp::DocumentUri;
+using Null      = std::nullptr_t;
+using uint      = unsigned int;
+using String    = std::string;
+using LSPArray  = json::Array;
+using LSPObject = json::Object;
+using LSPAny    = json::Any;
 
 template<typename T>
 using Opt = std::optional<T>;
@@ -929,32 +925,32 @@ template<typename... Args>
 using OneOf = std::variant<Args...>;
 
 template<typename T>
-using NullOr = lsp::Nullable<T>;
+using NullOr = Nullable<T>;
 
 template<typename... Args>
-using NullOrOneOf = lsp::NullableVariant<Args...>;
+using NullOrOneOf = NullableVariant<Args...>;
 
 template<typename T>
 using Array = std::vector<T>;
 
 template<typename K, typename T>
-using Map = lsp::StrMap<K, T>;
+using Map = StrMap<K, T>;
 
 )";
 
 static constexpr const char* TypesHeaderEnd =
 R"(
-} // namespace tt
+} // namespace lsp
 )";
 
 static constexpr const char* TypesSourceBegin =
-R"(#include "tt/types.h"
+R"(#include "types.h"
 
 /*#############################################################
  * NOTE: This is a generated file and it shouldn't be modified!
  *#############################################################*/
 
-namespace tt {
+namespace lsp{
 
 #if defined(__clang__) || defined(__GNUC__)
 #pragma GCC diagnostic push
@@ -972,7 +968,7 @@ R"(#if defined(__clang__) || defined(__GNUC__)
 #elif defined(_MSC_VER)
 #pragma warning(pop)
 #endif
-} // namespace tt
+} // namespace lsp
 )";
 
 static constexpr const char* MessagesHeaderBegin =
@@ -983,14 +979,14 @@ R"(#pragma once
  *#############################################################*/
 
 #include <lsp/messagebase.h>
-#include "tt/types.h"
+#include "types.h"
 
-namespace tt {
+namespace lsp{
 
 )";
 
 static constexpr const char* MessagesHeaderEnd =
-R"(} // namespace tt
+R"(} // namespace lsp
 )";
 
 class CppGenerator
@@ -1089,8 +1085,8 @@ private:
 		m_messagesHeaderFileContent += documentationComment(method, message.documentation) +
 		                               "struct " + messageCppName + "{\n"
 		                               "\tstatic constexpr auto Method    = std::string_view(\"" + method + "\");\n"
-		                               "\tstatic constexpr auto Direction = lsp::MessageDirection::" + messageDirection + ";\n"
-		                               "\tstatic constexpr auto Type      = lsp::Message::" + (isNotification ? "Notification" : "Request") + ";\n";
+		                               "\tstatic constexpr auto Direction = MessageDirection::" + messageDirection + ";\n"
+		                               "\tstatic constexpr auto Type      = Message::" + (isNotification ? "Notification" : "Request") + ";\n";
 
 		const bool hasRegistrationOptions = !message.registrationOptionsTypeName.empty();
 		const bool hasPartialResult = !message.partialResultTypeName.empty();

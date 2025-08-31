@@ -2,6 +2,7 @@
 
 #include <Windows.h>
 
+#include <fstream>
 #include <ranges>
 
 #include <lsp/connection.h>
@@ -32,10 +33,20 @@ int main() {
 
   tt::FdFileFinder ff;
 
-  message_handler.add<tt::requests::QueryFiles>(
-      [&]() { return tt::QueryFilesResult(ToUri(ff.GetFiles())); });
+  auto of = std::ofstream(
+      "C:/Users/marco/Documents/dev/projects/teletex/teletex/log.log");
 
-  message_handler.add<tt::notifications::Exit>([&running] { running = false; });
+  message_handler.add<lsp::requests::QueryFiles>(
+      [&](lsp::QueryFilesParams uri) {
+        auto root_dir = std::string(uri.root.path());
+        of << "[log] " << root_dir << '\n';
+        return lsp::QueryFilesResult(ToUri(ff.GetFilesFromDir(root_dir)));
+      });
+
+  message_handler.add<lsp::notifications::Exit>([&] {
+    of << "[log] " << "exiting...";
+    running = false;
+  });
 
   while (running) {
     message_handler.processIncomingMessages();

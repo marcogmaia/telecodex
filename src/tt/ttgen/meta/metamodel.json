@@ -6,9 +6,10 @@
       "method": "queryFiles",
       "documentation": "Query files in folder",
       "messageDirection": "clientToServer",
+      "params": { "kind": "reference", "name": "QueryFilesParams" },
       "result": {
         "kind": "array",
-        "element": { "kind": "base", "name": "DocumentUri"}
+        "element": { "kind": "base", "name": "DocumentUri" }
       }
     }
   ],
@@ -20,6 +21,14 @@
     }
   ],
   "enumerations": [],
-  "structures": [],
+  "structures": [
+    {
+      "name": "QueryFilesParams",
+      "documentation": "Root to search the files",
+      "properties": [
+        { "name": "root", "type": { "kind": "base", "name": "DocumentUri" } }
+      ]
+    }
+  ],
   "typeAliases": []
 }
